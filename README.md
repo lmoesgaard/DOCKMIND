@@ -107,7 +107,7 @@ The final output JSON file contains best-fit parameters for each target, for exa
 ---
 
 ### Example: Using HitRateModel directly
-The notebook, `analyze.ipynb`, is supplemented to different ways the method can be used. Alternatively, a simple example is available here:
+The notebook, `demonstration.ipynb`, is supplemented to show how the HitRateModel functions can be utilized. Additionally, a simple example is available here:
 
     from model import HitRateModel
 

@@ -1,0 +1,8 @@
+{
+    "artifact_mean": [-5, -3],
+    "artifact_std": [0.5, 1],
+    "artifact_freq": [1e-7, 1e-2],
+    "rho": [-0.9, -0.4],
+    "exp_mean": [-4, 4],
+    "exp_std": [0.5, 3]
+}

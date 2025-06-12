@@ -195,3 +195,4 @@ cython_debug/
 
 # Local development files
 test*
+.DS_Store

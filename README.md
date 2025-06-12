@@ -17,7 +17,9 @@ DOCK Model from Inferred Normal Distributions. This repository provides tools fo
 This code requires Python 3.7+ and the following packages:
 
     pip install numpy pandas scipy deap
+**Optional:** To run the supplemented notebooks, a few additional libraries are required
 
+    pip install jupyter seaborn ipywidgets
 ---
 
 ## Fitting
@@ -107,7 +109,7 @@ The final output JSON file contains best-fit parameters for each target, for exa
 ---
 
 ### Example: Using HitRateModel directly
-The notebook, `demonstration.ipynb`, is supplemented to show how the HitRateModel functions can be utilized. Additionally, a simple example is available here:
+A notebook for manual/interactive fitting of hit rate curves is made available (`interactive.ipynb`). Further, the notebook, `demonstration.ipynb`, is supplemented to show how the HitRateModel functions can be utilized. Additionally, a simple example is available here:
 
     from model import HitRateModel
 

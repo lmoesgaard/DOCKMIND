@@ -12,6 +12,13 @@ class HitRateModel:
     with an optional artifact distribution to account for false positives or outliers.
     It allows calculation of hit rates from modeled experimental outcomes given screening parameters.
 
+    The model works with standardized docking scores: pProp values (log-scaled proportions)
+    are converted to standardized scores from a standard Gaussian distribution (mean=0, std=1).
+    Good docking scores are negative in the left tail (approximately -2 to -8). The minimum
+    achievable score depends on library size: max pProp is bounded by log10(library_size).
+    For example, a 1k-molecule library has best score ≈ -3, while a 100M-molecule library
+    has best score ≈ -5.6.
+
     Parameters
     ----------
     input_params : dict
@@ -78,10 +85,20 @@ class HitRateModel:
         """
         Compute the hit rate for a given pProp value and experimental threshold (hit definition).
 
+        This method converts pProp (log-scaled proportion) to a standardized docking score, which is
+        a quantile value from a standard Gaussian distribution (mean=0, std=1). Good docking scores
+        are negative (left tail, approximately -2 to -8 range).
+
+        Important: The minimum achievable standardized score depends on library size:
+        - Library of 1,000 molecules (max pProp ≈ 3): best score ≈ -3.0
+        - Library of 100 million molecules (max pProp ≈ 8): best score ≈ -5.6
+        The maximum pProp is bounded by log10(library_size).
+
         Parameters
         ----------
         pprop : float or array-like
-            Log-scaled proportion of top-ranked molecules (e.g., pProp = 3 means top 1 in 1000).
+            Log-scaled proportion of top-ranked molecules. pProp = -log10(fraction).
+            Examples: pProp = 3 means top 1 in 1000, pProp = 6 means top 1 in 1 million.
             Can be a single float or an array of floats.
         definition : float or array-like
             Experimental pKi threshold for defining a hit.
@@ -100,7 +117,10 @@ class HitRateModel:
         self.exp_threshold = (definition - self.exp_mean) / self.exp_std
         self.ihr = 1 - norm.cdf(self.exp_threshold)
 
-        # Convert pProp to a standardized docking score using the mixture distribution
+        # Convert pProp to a standardized docking score using the mixture distribution.
+        # pProp = -log10(fraction), so 10**(-pProp) gives the quantile (fraction of library in top pProp).
+        # The ppf_lookup applies the inverse CDF to convert this quantile to a standardized score,
+        # which follows a standard Gaussian (mean=0, std=1). Good scores are negative in the left tail.
         standardized_score = self.ppf_lookup(10**(-pprop))
         return self._calculate_hit_rate(standardized_score)
     

@@ -93,6 +93,38 @@ The final output JSON file contains best-fit parameters for each target, for exa
 
 ---
 
+## Understanding pProp and Standardized Docking Scores
+
+### The pProp Scale
+
+**pProp** is a log-scaled proportion of top-ranked molecules in the virtual screening library:
+- pProp = -log₁₀(fraction)
+- pProp = 1 → top 1 in 10 molecules
+- pProp = 2 → top 1 in 100 molecules
+- pProp = 3 → top 1 in 1,000 molecules
+- pProp = 6 → top 1 in 1,000,000 molecules
+
+### Standardized Docking Score Mapping
+
+The model converts pProp values to **standardized docking scores** that follow a **standard Gaussian distribution** (mean = 0, standard deviation = 1):
+
+- **Good docking scores are negative** and occupy the left tail of the distribution
+- This range represents the quantile values (inverse CDF) corresponding to the top-ranked molecules
+
+### Library Size and Minimum Standardized Score
+
+A critical concept: **the minimum achievable standardized score depends on the library size**, because the maximum pProp is bounded by:
+
+$$\text{max pProp} = \log_{10}(\text{library size})$$
+
+**Examples:**
+- **Library with 1,000 molecules** (max pProp ≈ 3): The best molecule has standardized score ≈ **-3.0**
+- **Library with 100 million molecules** (max pProp ≈ 8): The best molecule has standardized score ≈ **-5.6**
+
+This relationship means that larger screening libraries naturally contain molecules with more extreme (more negative) docking scores.
+
+---
+
 ## Model Overview
 
 `model.py` implements the HitRateModel class, which simulates virtual screening results based on the fitted parameters.
